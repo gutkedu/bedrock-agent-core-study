@@ -1,0 +1,53 @@
+## Redacted Bedrock AgentCore toolkit config template
+## Replace placeholders with your account-specific values before running the toolkit,
+## or run `agentcore configure` interactively to generate a local `.bedrock_agentcore.yaml`.
+
+default_agent: <DEFAULT_AGENT_NAME>
+agents:
+  <DEFAULT_AGENT_NAME>:
+    name: <DEFAULT_AGENT_NAME>
+    # Use a repo-relative entrypoint when committing a template (do not include absolute paths)
+    entrypoint: src/strands_agent.py
+    platform: linux/arm64
+    container_runtime: docker
+    # Replace with your repository root or a relative path
+    source_path: .
+    aws:
+      # Replace with your execution role ARN or leave blank to have agentcore auto-create it
+      execution_role: <EXECUTION_ROLE_ARN>
+      execution_role_auto_create: true
+      # Replace with your AWS account ID
+      account: '<ACCOUNT_ID>'
+      region: <AWS_REGION>
+      # Replace with your ECR URI if you want to fix it, or leave empty to auto-create
+      ecr_repository: <ECR_URI>
+      ecr_auto_create: true
+      network_configuration:
+        network_mode: PUBLIC
+        network_mode_config: null
+      protocol_configuration:
+        server_protocol: HTTP
+      observability:
+        enabled: true
+    bedrock_agentcore:
+      agent_id: <AGENT_ID>
+      agent_arn: <AGENT_ARN>
+      agent_session_id: <AGENT_SESSION_ID>
+    codebuild:
+      project_name: <CODEBUILD_PROJECT_NAME>
+      execution_role: <CODEBUILD_EXECUTION_ROLE_ARN>
+      source_bucket: <CODEBUILD_SOURCE_BUCKET>
+    memory:
+      mode: STM_ONLY
+      memory_id: <MEMORY_ID>
+      memory_arn: <MEMORY_ARN>
+      memory_name: <MEMORY_NAME>
+      event_expiry_days: 30
+      first_invoke_memory_check_done: false
+      was_created_by_toolkit: false
+    authorizer_configuration: null
+    request_header_configuration: null
+    oauth_configuration: null
+
+# Note: This template intentionally avoids including sensitive credentials (no access keys).
+# Keep the real `.bedrock_agentcore.yaml` out of version control and generate it locally per-account.
