@@ -1,6 +1,17 @@
 from bedrock_agentcore import BedrockAgentCoreApp
 from strands import Agent
 
+# Agent configuration
+AGENT_CONFIG = {
+    "name": "agent1",
+    "version": "1.0.0",
+    "description": "Basic conversational agent using Strands",
+    "model": "default",
+    "max_tokens": 1000,
+    "temperature": 0.7,
+    "system_prompt": "You are a helpful AI assistant."
+}
+
 app = BedrockAgentCoreApp()
 agent = Agent()
 
