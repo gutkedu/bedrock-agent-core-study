@@ -1,17 +1,21 @@
 # Bedrock AgentCore Multi-Agent Study
 
-A scalable multi-agent project demonstrating agent-to-agent patterns and deployment options using Amazon Bedrock AgentCore and Strands Agents.
+A scalable multi-agent project demonstrating agent-to-agent patterns and deployment options using Amazon Bedrock AgentCore and Strands Agents with tool integration.
 
 ## Project Structure
 
 ```
 bedrock-agent-core-study/
-├── agents/                    # Individual agent implementations
-│   └── agent1/               # Example agent
+├── src/                      # Main source code directory
+│   ├── agents/               # Individual agent implementations
+│   │   └── agent1/           # Example agent with web tools
+│   │       ├── __init__.py
+│   │       ├── agent.py      # Main agent logic with config variables
+│   │       ├── requirements.txt  # Agent dependencies
+│   │       └── tests/        # Agent tests
+│   └── shared/               # Shared utilities and tools
 │       ├── __init__.py
-│       ├── agent.py          # Main agent logic with config variables
-│       ├── requirements.txt  # Agent dependencies
-│       └── tests/            # Agent tests
+│       └── web_tools.py     # Web access tools (reusable across agents)
 ├── .bedrock_agentcore.yaml  # AgentCore deployment configuration
 ├── requirements.txt         # Shared project dependencies
 ├── Makefile                 # Build and deployment automation
@@ -83,18 +87,19 @@ This will:
 - Create a basic configuration file
 
 Then customize:
-- `agents/my_new_agent/agent.py` - Implement your agent logic
-- `config/my_new_agent.yaml` - Configure your agent settings
-- `agents/my_new_agent/requirements.txt` - Add agent-specific dependencies
+- `src/agents/my_new_agent/agent.py` - Implement your agent logic
+- `src/agents/my_new_agent/requirements.txt` - Add agent-specific dependencies
 
 ## Agent Development
 
 ### Agent Structure
 
 Each agent should have:
-- `agent.py` - Main entrypoint with `@app.entrypoint` decorator and configuration variables
-- `requirements.txt` - Agent dependencies
-- `tests/test_agent.py` - Unit tests
+- `src/agents/{agent_name}/agent.py` - Main entrypoint with `@app.entrypoint` decorator and configuration variables
+- `src/agents/{agent_name}/requirements.txt` - Agent dependencies
+- `src/agents/{agent_name}/tests/test_agent.py` - Unit tests
+
+Agents can import and use shared tools from `src/shared/` for common functionality.
 
 ### Configuration
 
@@ -105,12 +110,61 @@ Agent configurations are defined as Python variables within each agent's `agent.
 AGENT_CONFIG = {
     "name": "agent1",
     "version": "1.0.0",
-    "description": "Basic conversational agent using Strands",
-    "model": "default",
+    "description": "Conversational agent with web access tools using Strands",
+    "model": "amazon.titan-text-lite-v1",
     "max_tokens": 1000,
     "temperature": 0.7,
-    "system_prompt": "You are a helpful AI assistant."
+    "system_prompt": "You are a helpful AI assistant with access to web tools."
 }
+```
+
+## Tools Integration
+
+Agents can be extended with tools to perform specific tasks like web access, calculations, and data retrieval.
+
+### Available Tools
+
+**Custom Tools** (in `agents/agent1/web_tools.py`):
+- `web_get(url)` - Fetch content from any web URL
+- `search_web(query)` - Perform web searches (placeholder implementation)
+- `get_weather_info(location)` - Get weather for a location (placeholder implementation)
+
+### Using Tools in Agents
+
+Tools are loaded automatically when the agent starts:
+
+```python
+from strands.tools.loader import load_tools_from_module
+
+# Load tools from a module
+tools = load_tools_from_module("web_tools")
+
+# Create agent with tools
+agent = Agent(model="amazon.titan-text-lite-v1", tools=tools)
+```
+
+### Creating Custom Tools
+
+Tools are created using the `@tool` decorator:
+
+```python
+from strands import tool
+
+@tool
+def my_custom_tool(param1: str, param2: int = 10) -> str:
+    """Tool description and docstring."""
+    # Tool implementation
+    return f"Result: {param1} with {param2}"
+```
+
+### Example Tool Usage
+
+```bash
+# Test web access
+make test-endpoint AGENT=agent1 PROMPT="Use web_get to fetch content from https://httpbin.org/get"
+
+# Test weather information
+make test-endpoint AGENT=agent1 PROMPT="What's the weather like in New York?"
 ```
 
 ## Deployment Options
@@ -185,7 +239,7 @@ Individual agent settings are defined as Python variables within each agent's co
 ## Development Workflow
 
 1. **Create Agent**: `make create-agent AGENT_NAME=new_agent`
-2. **Develop**: Edit `agents/new_agent/agent.py`
+2. **Develop**: Edit `src/agents/new_agent/agent.py`
 3. **Test**: `make test-agent AGENT=new_agent`
 4. **Deploy Locally**: `make deploy-local AGENT=new_agent`
 5. **Deploy to AWS**: `make deploy-aws AGENT=new_agent`

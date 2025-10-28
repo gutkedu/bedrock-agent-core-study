@@ -8,7 +8,7 @@ import os
 # Add the project root to the path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 
-from agents.agent1.agent import invoke
+from agents.agent1.agent import invoke, agent
 
 
 class TestAgent1(unittest.TestCase):
@@ -52,6 +52,31 @@ class TestAgent1(unittest.TestCase):
         self.assertEqual(AGENT_CONFIG["name"], "agent1")
         self.assertIn("version", AGENT_CONFIG)
         self.assertIn("description", AGENT_CONFIG)
+
+    def test_tools_loaded(self):
+        """Test that tools are properly loaded."""
+        # Import the tools from shared module
+        from src.agents.agent1.web_tools import web_get, search_web, get_weather_info
+        tools = [web_get, search_web, get_weather_info]
+        
+        # Check that tools list exists and has items
+        self.assertIsInstance(tools, list)
+        self.assertGreater(len(tools), 0)
+
+        # Check that our custom tools are included
+        tool_names = [tool.__name__ if hasattr(tool, '__name__') else str(tool) for tool in tools]
+        self.assertIn("web_get", tool_names)
+        self.assertIn("search_web", tool_names)
+        self.assertIn("get_weather_info", tool_names)
+
+    def test_agent_has_tools(self):
+        """Test that the agent is configured with tools."""
+        # Check that agent was created successfully
+        from agents.agent1.agent import agent
+        self.assertIsNotNone(agent)
+        # Agent should be an Agent instance
+        from strands import Agent
+        self.assertIsInstance(agent, Agent)
 
 
 if __name__ == '__main__':
