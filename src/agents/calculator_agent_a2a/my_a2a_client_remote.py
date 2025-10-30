@@ -78,5 +78,5 @@ async def send_sync_message(message: str):
                 # Fallback for other response types
                 return str(event)
 
-result = asyncio.run(send_sync_message("what is 101 * 11"))
+result = asyncio.run(send_sync_message("what is the cosine of pi divided by 4 plus the square root of 16?"))
     
