@@ -78,7 +78,5 @@ async def send_sync_message(message: str):
                 # Fallback for other response types
                 return str(event)
 
-# Usage - Uses AGENTCORE_RUNTIME_URL environment variable
 result = asyncio.run(send_sync_message("what is 101 * 11"))
-print(result)
     
