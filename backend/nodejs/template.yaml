@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: URL Shortener Backend Stack
+Description: Nodejs Stack
 
 Parameters:
   UserPoolId:
@@ -80,13 +80,6 @@ Resources:
       Layers:
         - !Ref NodejsDepsLayer
         - !Sub arn:aws:lambda:${AWS::Region}:094274105915:layer:AWSLambdaPowertoolsTypeScriptV2:17
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            RestApiId: !Ref ApiGateway
-            Path: /auth/signin
-            Method: POST
       Policies:
         - AWSLambdaExecute
         - Version: '2012-10-17'
@@ -113,28 +106,15 @@ Resources:
           - '@aws-lambda-powertools/parser'
           - '@middy/core'
 
-  ##########################################################################
-  #                              API Gateway                               #
-  ##########################################################################
-  ApiGateway:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: api
-      EndpointConfiguration:
-        Type: REGIONAL
-      Auth:
-        Authorizers:
-          TokenAuthorizer:
-            FunctionArn: !GetAtt TokenAuthorizerFunction.Arn
-            Identity:
-              Header: Authorization
-              ReauthorizeEvery: 1800
-      Cors:
-        AllowMethods: '''GET,POST,OPTIONS'''
-        AllowHeaders: '''Content-Type,Authorization'''
-        AllowOrigin: '''*'''
-
 Outputs:
-  ApiGatewayURL:
-    Description: URL for the API Gateway
-    Value: !Sub https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/api/
+  TokenAuthorizerFunctionArn:
+    Description: ARN of the Token Authorizer Lambda Function
+    Value: !GetAtt TokenAuthorizerFunction.Arn
+    Export:
+      Name: !Sub NodejsStack-TokenAuthorizerFunctionArn
+
+  SigninFunctionArn:
+    Description: ARN of the Signin Lambda Function
+    Value: !GetAtt SigninFunction.Arn
+    Export:
+      Name: !Sub NodejsStack-SigninFunctionArn

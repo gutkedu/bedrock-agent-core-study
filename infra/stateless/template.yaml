@@ -8,15 +8,23 @@ Parameters:
     Default: ServerlessHackaton
 
 Resources:   
-  BackendStackApplication:
+  NodejsBackendStackApp:
     Type: AWS::Serverless::Application
     Properties:
-      Location: ../../backend/template.yaml
+      Location: ../../backend/nodejs/template.yaml
       Parameters:
         UserPoolId: !ImportValue "StatefulStack-UserPoolId"
         UserPoolClientId: !ImportValue "StatefulStack-UserPoolClientId"
 
+  ApiGatewayStackApp:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./api-gw.yaml
+    DependsOn: NodejsBackendStackApp
+
 Outputs:  
   ApiGatewayURL:
     Description: URL for the API Gateway
-    Value: !GetAtt BackendStackApplication.Outputs.ApiGatewayURL
+    Value: !GetAtt ApiGatewayStackApp.Outputs.ApiGatewayURL
+    Export:
+      Name: !Sub StatelessStack-ApiGatewayURL

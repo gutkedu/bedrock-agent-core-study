@@ -1,0 +1,64 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: API Gateway Stack
+  
+  
+Resources:   
+  ##########################################################################
+  #                              API Gateway                               #
+  ##########################################################################
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: api
+      EndpointConfiguration:
+        Type: REGIONAL
+      Auth:
+        Authorizers:
+          TokenAuthorizer:
+            FunctionArn: !ImportValue NodejsStack-TokenAuthorizerFunctionArn
+            Identity:
+              Header: Authorization
+              ReauthorizeEvery: 1800
+      Cors:
+        AllowMethods: '''GET,POST,OPTIONS'''
+        AllowHeaders: '''Content-Type,Authorization'''
+        AllowOrigin: '''*'''
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: Agent API
+        paths:
+          /auth/signin:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub:
+                    - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${SigninArn}/invocations
+                    - SigninArn: !ImportValue NodejsStack-SigninFunctionArn
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: 200 response
+
+  SigninInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !ImportValue NodejsStack-SigninFunctionArn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/POST/auth/signin
+
+  TokenAuthorizerInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !ImportValue NodejsStack-TokenAuthorizerFunctionArn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*/*
+
+Outputs:
+  ApiGatewayURL:
+    Description: URL for the API Gateway
+    Value: !Sub https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/api/
