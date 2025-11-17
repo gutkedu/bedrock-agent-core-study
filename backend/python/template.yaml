@@ -11,6 +11,17 @@ Parameters:
     Type: String
     Description: ID of the Cognito User Pool Client
 
+  CoordinatorAgentUrl:
+    Type: String
+    Description: AgentCore runtime URL for the coordinator agent
+    Default: ""
+
+  BearerToken:
+    Type: String
+    Description: Bearer token for coordinator agent authentication
+    NoEcho: true
+    Default: ""
+
 Globals:
   Function:
     Timeout: 10
@@ -34,9 +45,30 @@ Resources:
       Policies:
         - AWSLambdaBasicExecutionRole
 
+  CoordinatorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: CoordinatorFunction
+      Description: Lambda function to communicate with the coordinator agent via A2A
+      Handler: coordinator.handler
+      CodeUri: src/lambdas/coordinator
+      Timeout: 300
+      Environment:
+        Variables:
+          COORDINATOR_AGENT_URL: !Ref CoordinatorAgentUrl
+          BEARER_TOKEN: !Ref BearerToken
+      Policies:
+        - AWSLambdaBasicExecutionRole
+
 Outputs:
   HelloFunctionArn:
     Description: ARN of the Hello Lambda Function
     Value: !GetAtt HelloFunction.Arn
     Export:
       Name: PythonStack-HelloFunctionArn
+
+  CoordinatorFunctionArn:
+    Description: ARN of the Coordinator Lambda Function
+    Value: !GetAtt CoordinatorFunction.Arn
+    Export:
+      Name: PythonStack-CoordinatorFunctionArn

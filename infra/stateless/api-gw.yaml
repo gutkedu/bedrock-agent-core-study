@@ -53,6 +53,18 @@ Resources:
               responses:
                 '200':
                   description: 200 response
+          /coordinator:
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub:
+                    - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CoordinatorArn}/invocations
+                    - CoordinatorArn: !ImportValue PythonStack-CoordinatorFunctionArn
+                httpMethod: POST
+                type: aws_proxy
+              responses:
+                '200':
+                  description: 200 response
 
   SigninInvokePermission:
     Type: AWS::Lambda::Permission
@@ -77,6 +89,14 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/GET/hello
+
+  CoordinatorInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !ImportValue PythonStack-CoordinatorFunctionArn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/POST/coordinator
 
 Outputs:
   ApiGatewayURL:

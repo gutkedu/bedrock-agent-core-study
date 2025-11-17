@@ -7,6 +7,17 @@ Parameters:
     Type: String
     Default: ServerlessHackaton
 
+  CoordinatorAgentUrl:
+    Type: String
+    Description: AgentCore runtime URL for the coordinator agent
+    Default: ""
+
+  BearerToken:
+    Type: String
+    Description: Bearer token for coordinator agent authentication
+    NoEcho: true
+    Default: ""
+
 Resources:   
   NodejsBackendStackApp:
     Type: AWS::Serverless::Application
@@ -31,6 +42,8 @@ Resources:
       Parameters:
         UserPoolId: !ImportValue "StatefulStack-UserPoolId"
         UserPoolClientId: !ImportValue "StatefulStack-UserPoolClientId"
+        CoordinatorAgentUrl: !Ref CoordinatorAgentUrl
+        BearerToken: !Ref BearerToken
 
 Outputs:  
   ApiGatewayURL:

@@ -1,0 +1,4 @@
+bedrock-agentcore
+strands-agents[a2a]
+strands-agents-tools
+httpx
