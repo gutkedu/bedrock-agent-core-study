@@ -20,7 +20,17 @@ Resources:
     Type: AWS::Serverless::Application
     Properties:
       Location: ./api-gw.yaml
-    DependsOn: NodejsBackendStackApp
+    DependsOn:
+      - NodejsBackendStackApp
+      - PythonBackendStackApp
+
+  PythonBackendStackApp:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ../../backend/python/template.yaml
+      Parameters:
+        UserPoolId: !ImportValue "StatefulStack-UserPoolId"
+        UserPoolClientId: !ImportValue "StatefulStack-UserPoolClientId"
 
 Outputs:  
   ApiGatewayURL:

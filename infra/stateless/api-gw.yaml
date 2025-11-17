@@ -41,6 +41,18 @@ Resources:
               responses:
                 '200':
                   description: 200 response
+          /hello:
+            get:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub:
+                    - arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HelloArn}/invocations
+                    - HelloArn: !ImportValue PythonStack-HelloFunctionArn
+                httpMethod: GET
+                type: aws_proxy
+              responses:
+                '200':
+                  description: 200 response
 
   SigninInvokePermission:
     Type: AWS::Lambda::Permission
@@ -57,6 +69,14 @@ Resources:
       Action: lambda:InvokeFunction
       Principal: apigateway.amazonaws.com
       SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/*/*
+
+  HelloInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !ImportValue PythonStack-HelloFunctionArn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGateway}/*/GET/hello
 
 Outputs:
   ApiGatewayURL:

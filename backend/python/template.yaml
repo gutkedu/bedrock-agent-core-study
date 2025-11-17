@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Python Backend Stack (Hello World Lambda)
+
+Parameters:
+  UserPoolId:
+    Type: String
+    Description: ID of the Cognito User Pool
+
+  UserPoolClientId:
+    Type: String
+    Description: ID of the Cognito User Pool Client
+
+Globals:
+  Function:
+    Timeout: 10
+    MemorySize: 512
+    Runtime: python3.12
+    CodeUri: .
+    Architectures:
+      - arm64
+
+Resources:
+  ##########################################################################
+  #                              Functions                                 #
+  ##########################################################################
+  HelloFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: HelloFunction
+      Description: A simple hello world function for testing
+      Handler: hello.handler
+      CodeUri: src/lambdas/hello/
+      Policies:
+        - AWSLambdaBasicExecutionRole
+
+Outputs:
+  HelloFunctionArn:
+    Description: ARN of the Hello Lambda Function
+    Value: !GetAtt HelloFunction.Arn
+    Export:
+      Name: PythonStack-HelloFunctionArn

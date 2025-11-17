@@ -1,0 +1,2 @@
+# No external dependencies needed for this simple function
+# Python standard library only (json module)

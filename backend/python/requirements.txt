@@ -1,0 +1,5 @@
+# Development dependencies
+aws-sam-cli>=1.100.0
+black>=23.7.0
+flake8>=6.1.0
+boto3>=1.28.0
