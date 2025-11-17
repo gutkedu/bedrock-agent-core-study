@@ -1,0 +1,30 @@
+{
+  "name": "my-lambda-function",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "npx tsc --noEmit",
+    "lint": "eslint . --quiet",
+    "sam:build": "sam build -t template.yaml",
+    "sam:validate": "sam validate --lint -t template.yaml"
+  },
+  "dependencies": {
+    "esbuild": "^0.25.1"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@aws-lambda-powertools/logger": "^2.28.1",
+    "@aws-lambda-powertools/parser": "2.28.1",
+    "@aws-sdk/client-cognito-identity-provider": "^3.798.0",
+    "@middy/core": "^6.3.0",
+    "@types/aws-lambda": "^8.10.147",
+    "@types/node": "^22.15.18",
+    "aws-jwt-verify": "^5.0.1",
+    "eslint": "^9.22.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.26.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "zod": "^4.1.12"
+  }
+}

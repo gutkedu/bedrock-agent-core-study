@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Stateful Resources Stack
+
+Resources:
+  ##########################################################################
+  #                              Cognito                                   #
+  ##########################################################################
+  CognitoApplication:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ./cognito.yaml
+      Parameters:
+        AppName: ApplicationName
+
+Outputs:
+  UserPoolId:
+    Description: ID of the Cognito User Pool
+    Value: !GetAtt CognitoApplication.Outputs.UserPoolId
+    Export:
+      Name: !Sub StatefulStack-UserPoolId
+
+  UserPoolArn:
+    Description: ARN of the Cognito User Pool
+    Value: !GetAtt CognitoApplication.Outputs.UserPoolArn
+    Export:
+      Name: !Sub StatefulStack-UserPoolArn
+
+  UserPoolClientId:
+    Description: ID of the Cognito User Pool Client
+    Value: !GetAtt CognitoApplication.Outputs.UserPoolClientId
+    Export:
+      Name: !Sub StatefulStack-UserPoolClientId
+
+  IdentityPoolId:
+    Description: ID of the Cognito Identity Pool
+    Value: !GetAtt CognitoApplication.Outputs.IdentityPoolId
+    Export:
+      Name: !Sub StatefulStack-IdentityPoolId

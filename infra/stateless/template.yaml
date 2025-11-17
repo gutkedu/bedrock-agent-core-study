@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Stateless Resources Stack
+
+Parameters:
+  AppName:
+    Type: String
+    Default: ServerlessHackaton
+
+Resources:   
+  BackendStackApplication:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: ../../backend/template.yaml
+      Parameters:
+        UserPoolId: !ImportValue "StatefulStack-UserPoolId"
+        UserPoolClientId: !ImportValue "StatefulStack-UserPoolClientId"
+
+Outputs:  
+  ApiGatewayURL:
+    Description: URL for the API Gateway
+    Value: !GetAtt BackendStackApplication.Outputs.ApiGatewayURL

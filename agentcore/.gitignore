@@ -209,6 +209,3 @@ node_modules/
 
 .bedrock_agentcore/
 .bedrock_agentcore.yaml
-
-.aws-sam/
-node_modules/
