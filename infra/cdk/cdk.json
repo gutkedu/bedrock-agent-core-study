@@ -1,0 +1,7 @@
+{
+  "app": "node --loader ts-node/esm --no-warnings bin/app.ts",
+  "context": {
+    "@aws-cdk/core:newStyleStackSynthesis": true,
+    "@aws-cdk/core:defaultCrossStackReferences": "strong"
+  }
+}

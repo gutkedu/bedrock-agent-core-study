@@ -2,6 +2,25 @@
 
 A scalable multi-agent project demonstrating agent-to-agent patterns and deployment options using Amazon Bedrock AgentCore and Strands Agents with tool integration.
 
+## Infrastructure Status
+
+The active IaC migration path is now the AWS CDK TypeScript app in
+`infra/cdk`. It models the existing SAM resources plus the AgentCore runtime
+deployment. The SAM templates remain in place as legacy reference material until
+CDK synth/diff/deploy parity is validated.
+
+Use:
+
+```bash
+cd infra/cdk
+npm install
+npm test
+npm run synth
+```
+
+See `infra/cdk/README.md` for stack layout, context values, and deployment
+notes.
+
 ## Project Structure
 
 ```

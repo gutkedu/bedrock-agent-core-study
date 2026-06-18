@@ -59,6 +59,8 @@ docs/
 
 # Project specific
 tests/
+my_a2a_client_remote.py
+fetch_agent_card.py
 
 # Bedrock AgentCore specific - keep config but exclude runtime files
 .bedrock_agentcore.yaml
