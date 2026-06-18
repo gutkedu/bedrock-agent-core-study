@@ -1,0 +1,4 @@
+interface:
+  display_name: "SAM"
+  short_description: "AWS SAM workflows and validation"
+  default_prompt: "Use $sam to validate and plan AWS SAM template changes."
