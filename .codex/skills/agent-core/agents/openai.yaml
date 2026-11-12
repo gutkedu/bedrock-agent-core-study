@@ -1,4 +1,0 @@
-interface:
-  display_name: "AgentCore"
-  short_description: "AgentCore and Strands guidance"
-  default_prompt: "Use $agent-core to review AgentCore, Strands, and A2A work."

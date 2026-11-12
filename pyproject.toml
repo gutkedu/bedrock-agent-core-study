@@ -1,0 +1,28 @@
+[project]
+name = "bedrock-agent-core-study"
+version = "0.1.0"
+description = "Trilha de estudo: Strands Agents + Amazon Bedrock AgentCore"
+requires-python = ">=3.12"
+dependencies = [
+    "strands-agents>=1.42",
+    "strands-agents-tools>=0.7",
+    "bedrock-agentcore>=1.13",
+    "boto3>=1.40",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "ruff>=0.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["modules"]
